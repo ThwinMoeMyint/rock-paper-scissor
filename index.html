@@ -5,8 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rock Paper Scissor</title>
 </head>
+<style>
+.header {
+    font-size: 50px;
+    text-align: center;
+    padding: 20px;
+}
+
+.Choices {
+    display: flex;
+    margin-top: 50px;
+    justify-content: center;
+    gap: 20px;
+}
+
+button {
+    width: 100px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 15px;
+}
+
+button:hover {
+    background-color: black;
+}
+
+.restart-button {
+    text-align: center;
+    padding: 10px;
+}
+
+.buttons:hover {
+    color: white;
+}
+
+button:active {
+    box-shadow: 0px 2px 5px #7d7f7c;
+    transform: translateY(2px);
+}
+
+.score {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+}
+
+.scoreboard {
+    display: flex; 
+    gap: 20px; 
+    justify-content: center;
+}
+
+.scoreboard > div {
+    width: 100px;
+    height: 100px;
+    border: 2px solid black;
+    border-radius: 8px;
+}
+</style>
 <body>
+
+    <div class="header">
+        Rock-Paper-Scissor
+    </div>
+    <div class="anounce" style="text-align: center;">
+        <span class="winner">Who's Gonna Win</span>
+    </div>
+    <div class="Choices">
+        <button class="buttons" id="rock" onclick="getUserChoice('rock')">Rock</button>
+        <button class="buttons" id="paper" onclick="getUserChoice('paper')">Paper</button>
+        <button class="buttons" id="scissor" onclick="getUserChoice('scissor')">Scissor</button>
+    </div>
+    <div class="restart-button">
+        <button class="buttons" id="restart" onclick="restartGame()">Restart</button>
+    </div>
+    <div class="score">
+        Score
+        <div class="scoreboard">
+            <div class="player" style="display: flex; justify-content: center; align-items: center;">0</div>
+            <div class="computer" style="display: flex; justify-content: center; align-items: center;">0</div>
+        </div>
+    </div>
     <script>
+        let userChoice;
+        let computerChoice;
+        let computerScore = 0;
+        let userScore = 0;
+
+        function getUserChoice(choice){
+            
+            userChoice = choice;
+            computerChoice = getComputerChoice();
+            playRound(userChoice, computerChoice)
+        } 
+
         function getComputerChoice(){
            let n = Math.floor(Math.random()*3);
 
@@ -19,51 +112,48 @@
             }
         }
 
-        function getUserChoice(){
-            let choose = prompt("choose: ");
-            
-            if(choose === "rock"){
-                return "rock";
-            } else if (choose === "paper"){
-                return "paper";
-            } else if (choose === "scissor"){
-                return "scissor";
-            } else {
-                console.log("Invalid choice, please restart the program");
-                return null;
-            }
-        } 
+        let scoreBoard = document.querySelector('.winner');
 
-        let computerScore = 0;
-        let userScore = 0;
+        playRound(userChoice, computerChoice);
 
-        function playRound(humanChoice, computerChoice){
+        function playRound(humanChoice, machineChoice){
             if(
-              (humanChoice === "rock" && computerChoice === "scissor")||
-              (humanChoice === "paper" && computerChoice === "rock") ||
-              (humanChoice === "scissor" && computerChoice === "paper")
+              (humanChoice === "rock" && machineChoice === "scissor")||
+              (humanChoice === "paper" && machineChoice === "rock") ||
+              (humanChoice === "scissor" && machineChoice === "paper")
             ){
                 userScore++;
-              } else if (humanChoice === computerChoice) {
-                console.log("Tie");
+                scoreBoard.textContent = "Player Win";
+              } else if (humanChoice === machineChoice) {
+                scoreBoard.textContent = "Tie";
               } else {
                 computerScore++;
+                scoreBoard.textContent = "Computer Win";
               }
+
+              document.querySelector('.player').textContent = userScore;
+              document.querySelector('.computer').textContent = computerScore;
+
+              whoIsWinner();
+
         }
 
-        function playGame(){
 
-            for(i=0; i<5; i++){
-                const humanSelection = getUserChoice();
-                const computerSelection = getComputerChoice();
-                playRound(humanSelection, computerSelection);
-            }
+        function whoIsWinner() {
+            if (userScore >= 10) {
+                scoreBoard.textContent = "Player Win the GAME!!";
+                setTimeout(restartGame, 3000);
+            } else if (computerScore >= 10) {
+                scoreBoard.textContent = "Computer Win the GAME!!";
+                setTimeout(restartGame, 3000);
+            } 
+        }
 
-            if(computerScore > userScore){
-                console.log("Computer Win!");
-            } else {
-                console.log("Player Win");
-            }
+        function restartGame() {
+            userScore = 0;
+            computerScore = 0;
+            document.querySelector('.player').textContent = userScore;
+            document.querySelector('.computer').textContent = computerScore;
         }
     </script>
 </body>
